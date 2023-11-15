@@ -18,23 +18,23 @@ let p, v;
 let isJumping;
 let angle;
 let width;
-let space;
 let scr;
 let playerCollision;
 let damp = 1;
 let enemySpeed = 2;
 
 let enemies = [];
-
+let blueBoxes = [];
+let blueBoxSpawnTimer = 0;
 
 
 function update() {
   if (!ticks) {
     p = vec(80, 85);
-    isJumping = angle = width = space = 0;
+    isJumping = angle = width  = 0;
   }
 
-  if (rnd() < 0.3) {
+  if (rnd() < 0.02) {
     let spawnSide = rndi(4); // Randomly select a side (0: top, 1: right, 2: bottom, 3: left)
     let spawnX, spawnY;
 
@@ -107,19 +107,28 @@ function update() {
       }
     }
 
-    color("red");
-    box(enemy.pos, enemy.size);
+    if (playerCollision.isColliding.rect.red ) {
+      // isJumping = angle = 0;
+      // p.y = 85;
+      end();
+    }
+
+  
   });
 
+  
+ 
+
+  
 
 
   color("yellow");
-  // rect(0, 10, width, 9);
+  
    rect(0, 0, 9, 400);
    rect(400, 400, -400, -9);
    rect(0, 0, 400, 9);
    rect(400, 400, -9, -400);
-  // rect(30, 90, 200, 9);
+  
   color("green");
   playerCollision = box(p, 9, 9);
   // if (p.x < 0 || p.y > 99) {
@@ -132,6 +141,9 @@ function update() {
     v.y = -v.y ;
     v.x = -v.x ;
   }
+
+
+  
 
   if (isJumping) {
     p.add(vec(v.x * damp, v.y * damp));
@@ -148,18 +160,65 @@ function update() {
   } 
     
   if (input.isPressed) {
-      bar(p, 20, 3, (angle -= 0.1), 0);
+    bar(p, 20, 3, (angle -= 0.1), 0);
      
-    }
+  }
   if (input.isJustReleased) {
-      play("jump");
-      isJumping = 1;
-      v = vec(4).rotate(angle);
-      damp = 1;
+    play("jump");
+    isJumping = 1;
+    v = vec(4).rotate(angle);
+    damp = 1;
     
-    }
+  }
   
   // p.x -= scr = clamp(p.x - 50, 0, 99) * 0.1 + difficulty;
   // width -= scr;
   score += scr;
+
+
+
+
+  blueBoxes.forEach((blueBox) => {
+    color("black");
+    box(blueBox.pos, blueBox.size);
+
+    if (p.pos == blueBox.pos) {
+ 
+      // enemies.splice(0, Math.ceil(enemies.length / 2));
+      // Remove the blue box
+      // v.y = -v.y ;
+      // v.x = -v.x ;
+      end();
+  
+    }
+
+  });
+
+
+
+
+ if (blueBoxSpawnTimer >= 100) {
+    let blueBoxSpawnX = rnd(50, 350);
+    let blueBoxSpawnY = rnd(50, 350);
+    
+    blueBoxes.push({
+      pos: vec(blueBoxSpawnX, blueBoxSpawnY),
+      size: 15,
+    });
+
+    blueBoxSpawnTimer = 0; // Reset the timer
+  } else {
+    blueBoxSpawnTimer++;
+  }
+
+  
+
+
+
+ 
+ 
+
+
+
+
 }

@@ -55,13 +55,17 @@ function update() {
     if (abs(a - player.angle) < angleWidth) {
       color(o.type === "coin" ? "yellow" : "purple");
       if (d < player.range) {
+
         text(o.type === "coin" ? "$" : "*", o.pos);
+        
       } else {
-        particle(o.pos, 0.05);
+    
       }
     }
     color("transparent");
     const c = text(o.type === "coin" ? "$" : "*", o.pos).isColliding;
+    color("red");
+        particle(o.pos, 0.05);
     if (c.rect.white) {
       if (o.type === "coin") {
         play("powerUp");
